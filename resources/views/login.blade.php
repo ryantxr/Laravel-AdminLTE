@@ -6,6 +6,7 @@
     @yield('css')
 @stop
 
+@section('body_id', config('adminlte.body_id'))
 @section('body_class', 'login-page')
 
 @section('body')

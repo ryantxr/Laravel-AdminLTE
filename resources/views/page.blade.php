@@ -7,6 +7,8 @@
     @yield('css')
 @stop
 
+@section('body_id', config('adminlte.body_id'))
+
 @section('body_class', 'skin-' . config('adminlte.skin', 'blue') . ' sidebar-mini ' . (config('adminlte.layout') ? [
     'boxed' => 'layout-boxed',
     'fixed' => 'fixed',

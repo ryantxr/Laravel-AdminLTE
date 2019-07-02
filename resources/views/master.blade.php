@@ -43,7 +43,11 @@
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 </head>
-<body class="hold-transition @yield('body_class')">
+<body class="hold-transition @yield('body_class')" 
+@if(config('adminlte.body_id'))
+id="@yield('body_id')"
+@endif
+>
 
 @yield('body')
 
