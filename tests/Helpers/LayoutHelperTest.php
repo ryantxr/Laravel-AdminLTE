@@ -63,23 +63,37 @@ class LayoutHelperTest extends TestCase
 
     public function testMakeBodyClassesWithSidebarMiniConfig()
     {
-        // Test config 'sidebar_mini' => false.
+        // Test config 'sidebar_mini' => null.
 
-        config(['adminlte.sidebar_mini' => false]);
+        config(['adminlte.sidebar_mini' => null]);
         $data = LayoutHelper::makeBodyClasses();
         $this->assertStringNotContainsString('sidebar-mini', $data);
+        $this->assertStringNotContainsString('sidebar-mini-md', $data);
+        $this->assertStringNotContainsString('sidebar-mini-xs', $data);
 
-        // Test config 'sidebar_mini' => true.
+        // Test config 'sidebar_mini' => 'lg'.
 
-        config(['adminlte.sidebar_mini' => true]);
+        config(['adminlte.sidebar_mini' => 'lg']);
         $data = LayoutHelper::makeBodyClasses();
         $this->assertStringContainsString('sidebar-mini', $data);
+        $this->assertStringNotContainsString('sidebar-mini-md', $data);
+        $this->assertStringNotContainsString('sidebar-mini-xs', $data);
 
         // Test config 'sidebar_mini' => 'md'.
 
         config(['adminlte.sidebar_mini' => 'md']);
         $data = LayoutHelper::makeBodyClasses();
-        $this->assertStringContainsString('sidebar-mini sidebar-mini-md', $data);
+        $this->assertStringContainsString('sidebar-mini-md', $data);
+        $this->assertStringNotContainsString('sidebar-mini-xs', $data);
+        $this->assertDoesNotMatchRegularExpression('/sidebar-mini[^-]/', $data);
+
+        // Test config 'sidebar_mini' => 'xs'.
+
+        config(['adminlte.sidebar_mini' => 'xs']);
+        $data = LayoutHelper::makeBodyClasses();
+        $this->assertStringContainsString('sidebar-mini-xs', $data);
+        $this->assertStringNotContainsString('sidebar-mini-md', $data);
+        $this->assertDoesNotMatchRegularExpression('/sidebar-mini[^-]/', $data);
     }
 
     public function testMakeBodyClassesWithSidebarCollapseConfig()
@@ -323,5 +337,20 @@ class LayoutHelperTest extends TestCase
         $data = LayoutHelper::makeBodyClasses();
         $this->assertStringContainsString('custom-body-class-1', $data);
         $this->assertStringContainsString('custom-body-class-2', $data);
+    }
+
+    public function testMakeBodyClassesWithDarkModeConfig()
+    {
+        // Test config 'layout_dark_mode' => null.
+
+        config(['adminlte.layout_dark_mode' => null]);
+        $data = LayoutHelper::makeBodyClasses();
+        $this->assertStringNotContainsString('dark-mode', $data);
+
+        // Test config 'layout_dark_mode' => true.
+
+        config(['adminlte.layout_dark_mode' => true]);
+        $data = LayoutHelper::makeBodyClasses();
+        $this->assertStringContainsString('dark-mode', $data);
     }
 }

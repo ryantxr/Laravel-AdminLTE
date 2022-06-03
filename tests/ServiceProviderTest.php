@@ -4,16 +4,6 @@ use JeroenNoten\LaravelAdminLte\AdminLte;
 
 class ServiceProviderTest extends TestCase
 {
-    /**
-     * Get package providers.
-     */
-    protected function getPackageProviders($app)
-    {
-        // Register our service provider into the Laravel's application.
-
-        return ['JeroenNoten\LaravelAdminLte\AdminLteServiceProvider'];
-    }
-
     public function testRegisterSingletonInstance()
     {
         // Check the instance of AdminLte resolver.
@@ -87,7 +77,45 @@ class ServiceProviderTest extends TestCase
         $adminlte = $this->app->make(AdminLte::class);
         $menu = $adminlte->menu();
 
-        $this->assertCount(10, $menu);
+        $this->assertCount(12, $menu);
         $this->assertEquals('search', $menu[0]['text']);
+    }
+
+    public function testBootLoadComponents()
+    {
+        // Check that some of the blade component views are loaded.
+
+        $this->assertTrue(View::exists('adminlte::components.form.input'));
+        $this->assertTrue(View::exists('adminlte::components.form.select2'));
+        $this->assertTrue(View::exists('adminlte::components.widget.card'));
+        $this->assertTrue(View::exists('adminlte::components.tool.modal'));
+
+        // Support of x-components is only available for Laravel >= 7.x
+        // versions. So, check if we can test for component existence first.
+
+        $canCheckComponents = method_exists(
+            'Illuminate\Support\Facade\Blade',
+            'getClassComponentAliases'
+        );
+
+        if (! $canCheckComponents) {
+            return;
+        }
+
+        // Now, check that the class components aliases are registered.
+
+        $aliases = Blade::getClassComponentAliases();
+
+        $this->assertTrue(isset($aliases['adminlte-input']));
+        $this->assertTrue(isset($aliases['adminlte-select2']));
+        $this->assertTrue(isset($aliases['adminlte-card']));
+        $this->assertTrue(isset($aliases['adminlte-modal']));
+    }
+
+    public function testBootLoadRoutes()
+    {
+        // Assert the package routes names are registered.
+
+        $this->assertTrue(Route::has('adminlte.darkmode.toggle'));
     }
 }
